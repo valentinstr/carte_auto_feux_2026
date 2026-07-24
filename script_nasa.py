@@ -34,11 +34,12 @@ SUD_OUEST = "-1.3912771298258413,44.26260201941759,-0.8286147086117207,44.956648
 df_feu = pd.DataFrame()
 
 satellites = ["VIIRS_NOAA20_NRT","MODIS_NRT","VIIRS_NOAA21_NRT","VIIRS_SNPP_NRT"]
-url = "https://firms.modaps.eosdis.nasa.gov/api/area/csv/0d04e25682e8760c6fa5a0c0cd9e22db/{}/{}/1/{}"
+NASA_API_KEY = os.environ["NASA_FIRMS_API_KEY"]
+url = "https://firms.modaps.eosdis.nasa.gov/api/area/csv/{}/{}/{}/1/{}"
 
 for date in pd.date_range(start=DEBUT_FEU, end=datetime.now().date()):
     for satellite in satellites:
-        response = requests.get(url.format(satellite, SUD_OUEST, date.strftime("%Y-%m-%d")))
+        response = requests.get(url.format(NASA_API_KEY, satellite, SUD_OUEST, date.strftime("%Y-%m-%d")))
         try:
             response.raise_for_status()
             if response.status_code == 200:
