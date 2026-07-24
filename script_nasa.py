@@ -1,26 +1,11 @@
 import pandas as pd
 import os
-from shapely.geometry import Point, box
 import requests
 from datetime import datetime
 import io
 import dotenv
 
 dotenv.load_dotenv()
-
-def squarify(instrument, point):
-    """
-    Création d'un carré autour du point en fonction de l'instrument.
-    """
-    if instrument == "VIIRS":
-        return box(
-            point.x - 187.5, point.y - 187.5, point.x + 187.5, point.y + 187.5
-        )
-    if instrument == "MODIS":
-        return box(
-            point.x - 500, point.y - 500, point.x + 500, point.y + 500
-        )
-
 
 ### RECUPERATION DES DONNÉES EN TEMPS RÉEL
 DEBUT_FEU = "2026-07-22"
