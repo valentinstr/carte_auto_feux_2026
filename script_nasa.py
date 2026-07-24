@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import requests
 from datetime import datetime
+import zoneinfo
 import io
 import dotenv
 
@@ -27,7 +28,7 @@ for date in pd.date_range(start=DEBUT_FEU, end=datetime.now().date()):
                 if df.empty:
                     print(f"No data for {satellite} on {date.strftime('%Y-%m-%d')}")
                     continue
-                df['date_end'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                df['date_end'] = datetime.now(zoneinfo.ZoneInfo("Europe/Paris")).strftime("%Y-%m-%d %H:%M:%S")
                 df['date_complete'] = pd.to_datetime(df['acq_date'] + ' ' + df['acq_time'].astype(str).str.zfill(4), format="%Y-%m-%d %H%M")
                 df['date_complete'] = df['date_complete'] + pd.Timedelta(hours=2)  # Correction du décalage horaire
                 df_feu = pd.concat([df_feu, df])
