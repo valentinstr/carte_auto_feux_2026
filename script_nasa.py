@@ -1,17 +1,12 @@
 import pandas as pd
-import geopandas as gpd
-from sklearn.cluster import DBSCAN
-from shapely.ops import unary_union
 import os
 from shapely.geometry import Point, box
 import requests
-import io
-import zipfile
-from tqdm import tqdm
-import json
-import tempfile
 from datetime import datetime
-import numpy as np
+import io
+import dotenv
+
+dotenv.load_dotenv()
 
 def squarify(instrument, point):
     """

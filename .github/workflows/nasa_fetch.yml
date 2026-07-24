@@ -19,10 +19,11 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: |
-          pip install pandas geopandas scikit-learn shapely requests tqdm numpy
+        run: pip install pandas requests python-dotenv
 
       - name: Run NASA script
+        env:
+          NASA_FIRMS_API_KEY: ${{ secrets.NASA_FIRMS_API_KEY }}
         run: python script_nasa.py
 
       - name: Commit and push output
