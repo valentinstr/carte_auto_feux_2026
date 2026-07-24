@@ -39,6 +39,8 @@ for date in pd.date_range(start=DEBUT_FEU, end=datetime.now().date()):
             print(f"Failed to download data for {satellite}: {e}")
 
 df_feu.reset_index(drop=True, inplace=True)
+df_feu = df_feu[['latitude', 'longitude', 'date_complete', 'date_end']]
+df_feu.drop_duplicates(subset=['latitude', 'longitude'], inplace=True)
 file_path = 'data/output/feux NASA/feux_sud_ouest.csv'
 os.makedirs(os.path.dirname(file_path), exist_ok=True)
 df_feu.to_csv(file_path, index=False)
