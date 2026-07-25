@@ -18,6 +18,8 @@ satellites = ["VIIRS_NOAA20_NRT","MODIS_NRT","VIIRS_NOAA21_NRT","VIIRS_SNPP_NRT"
 NASA_API_KEY = os.environ["NASA_FIRMS_API_KEY"]
 url = "https://firms.modaps.eosdis.nasa.gov/api/area/csv/{}/{}/{}/1/{}"
 
+NOW = datetime.now(tz=zoneinfo.ZoneInfo("Europe/Paris"))
+
 for date in pd.date_range(start=DEBUT_FEU, end=datetime.now().date()):
     for satellite in satellites:
         response = requests.get(url.format(NASA_API_KEY, satellite, SUD_OUEST, date.strftime("%Y-%m-%d")))
@@ -28,9 +30,14 @@ for date in pd.date_range(start=DEBUT_FEU, end=datetime.now().date()):
                 if df.empty:
                     print(f"No data for {satellite} on {date.strftime('%Y-%m-%d')}")
                     continue
-                df['date_end'] = datetime.now(zoneinfo.ZoneInfo("Europe/Paris")).strftime("%Y-%m-%d %H:%M:%S")
                 df['date_complete'] = pd.to_datetime(df['acq_date'] + ' ' + df['acq_time'].astype(str).str.zfill(4), format="%Y-%m-%d %H%M")
                 df['date_complete'] = df['date_complete'] + pd.Timedelta(hours=2)  # Correction du décalage horaire
+                df['date_complete'] = df['date_complete'].dt.tz_localize("Europe/Paris")
+                df['date_end'] = df['date_complete'].apply(lambda x: x+pd.Timedelta(hours=24) if (NOW - x) >= pd.Timedelta(hours=24) else NOW)
+                
+                df['date_complete'] = df['date_complete'].dt.strftime('%Y-%m-%d %H:%M:%S')
+                df['date_end'] = df['date_end'].dt.strftime('%Y-%m-%d %H:%M:%S')
+                
                 df_feu = pd.concat([df_feu, df])
                 
             else:
